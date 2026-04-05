@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>About — SIET Modern Campus Portal</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
+  <style>
+    /* =========================
+       SIET Design Tokens (matched)
+       ========================= */
+    :root {
+      --bg-primary:    #fbfaf6;
+      --bg-secondary:  #ffffff;
+      --bg-card:       #ffffff;
+      --bg-nav:        rgba(255,255,255,0.85);
+
+      --text-primary:  #0f172a;
+      --text-secondary:#475569;
+      --text-muted:    #94a3b8;
+
+      --accent:        #b7891c; /* antique gold */
+      --accent-light:  #f5d77a;
+      --accent-dark:   #8a6413;
+      --accent-glow:   rgba(183,137,28,0.20);
+
+      --success:       #22c55e;
+      --warning:       #f59e0b;
+      --danger:        #ef4444;
+
+      --border:        rgba(15,23,42,0.10);
+      --shadow:        0 10px 30px rgba(15,23,42,0.08);
+      --shadow-lg:     0 24px 70px rgba(15,23,42,0.12);
+
+      --radius:        14px;
+      --radius-lg:     24px;
+      --transition:    0.35s cubic-bezier(0.4,0,0.2,1);
+    }
+
+    [data-theme="dark"] {
+      --bg-primary:    #07070a;
+      --bg-secondary:  #0b0c10;
+      --bg-card:       #0f1117;
+      --bg-nav:        rgba(7,7,10,0.75);
+
+      --text-primary:  #f8fafc;
+      --text-secondary:#cbd5e1;
+      --text-muted:    #94a3b8;
+
+      --accent:        #d4af37; /* classic gold */
+      --accent-light:  #f7e7a1;
+      --accent-dark:   #b7891c;
+      --accent-glow:   rgba(212,175,55,0.22);
+
+      --border:        rgba(212,175,55,0.18);
+      --shadow:        0 10px 30px rgba(0,0,0,0.55);
+      --shadow-lg:     0 26px 90px rgba(0,0,0,0.65);
+    }
+
+    /* ===== RESET & BASE ===== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      transition: background var(--transition), color var(--transition);
+      overflow-x: hidden;
+    }
+    a { text-decoration: none; color: inherit; }
+    ul { list-style: none; }
+    img { max-width: 100%; }
+
+    /* ===== SCROLLBAR ===== */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg-primary); }
+    ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 9999px; }
+
+    /* ===== TICKER (ALERT BANNER) ===== */
+    #ticker-bar {
+      background: linear-gradient(90deg, var(--accent-dark), var(--accent));
+      color: #fff;
+      padding: 8px 0;
+      font-size: 0.82rem;
+      font-weight: 500;
+      position: relative;
+      overflow: hidden;
+      z-index: 1100;
+      display: flex;
+      align-items: center;
+    }
+    #ticker-bar .ticker-label {
+      background: rgba(0,0,0,0.25);
+      padding: 2px 16px 2px 14px;
+      white-space: nowrap;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      clip-path: polygon(0 0, 90% 0, 100% 50%, 90% 100%, 0 100%);
+      flex-shrink: 0;
+      z-index: 2;
+      position: relative;
+    }
+    #ticker-bar .ticker-close {
+      position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+      background: rgba(255,255,255,0.2); border: none; color: #fff;
+      width: 22px; height: 22px; border-radius: 50%; cursor: pointer;
+      font-size: 12px; display: flex; align-items: center; justify-content: center;
+      z-index: 3; transition: background 0.2s;
+    }
+    #ticker-bar .ticker-close:hover { background: rgba(255,255,255,0.4); }
+    .ticker-track-wrapper { flex: 1; overflow: hidden; }
+    .ticker-track {
+      display: flex; align-items: center; gap: 60px;
+      white-space: nowrap;
+      animation: ticker-scroll 28s linear infinite;
+      width: max-content;
+    }
+    .ticker-track:hover { animation-play-state: paused; }
+    .ticker-item { display: flex; align-items: center; gap: 8px; }
+    .ticker-item i { opacity: 0.8; font-size: 0.8rem; }
+    @keyframes ticker-scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+    /* ===== NAVIGATION ===== */
+    #navbar {
+      position: sticky; top: 0; z-index: 1000;
+      background: var(--bg-nav);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      border-bottom: 1px solid var(--border);
+      transition: background var(--transition), box-shadow var(--transition);
+    }
+    #navbar.scrolled { box-shadow: var(--shadow); }
+    .nav-inner {
+      max-width: 1280px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 24px; height: 66px;
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: 10px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700; font-size: 1.35rem; color: var(--accent);
+    }
+    .nav-logo .logo-icon {
+      width: 36px; height: 36px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-light));
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-size: 1rem; font-weight: 800;
+      box-shadow: 0 4px 12px var(--accent-glow);
+    }
+    .nav-links { display: flex; align-items: center; gap: 4px; }
+    .nav-links a {
+      padding: 8px 14px; border-radius: 8px;
+      font-size: 0.9rem; font-weight: 500; color: var(--text-secondary);
+      transition: background 0.2s, color 0.2s; position: relative;
+    }
+    .nav-links a:hover, .nav-links a.active {
+      background: var(--accent-glow); color: var(--accent);
+    }
+    .nav-dropdown { position: relative; }
+    .nav-dropdown > a::after {
+      content: '\f078'; font-family: 'Font Awesome 6 Free'; font-weight: 900;
+      font-size: 0.65rem; margin-left: 5px; vertical-align: 1px; transition: transform 0.3s;
+    }
+    .nav-dropdown:hover > a::after { transform: rotate(180deg); }
+    .dropdown-menu {
+      position: absolute; top: calc(100% + 10px); left: 50%;
+      transform: translateX(-50%) translateY(-8px);
+      background: var(--bg-card);
+      border: 1px solid var(--border); border-radius: var(--radius);
+      box-shadow: var(--shadow-lg);
+      padding: 8px; min-width: 220px;
+      opacity: 0; visibility: hidden;
+      transition: opacity 0.2s, transform 0.2s, visibility 0.2s;
+      z-index: 200;
+    }
+    .nav-dropdown:hover .dropdown-menu {
+      opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0);
+    }
+    .dropdown-menu a {
+      display: flex; align-items: center; gap: 10px;
+      padding: 9px 12px; border-radius: 8px;
+      font-size: 0.87rem; color: var(--text-secondary);
+      transition: background 0.2s, color 0.2s;
+    }
+    .dropdown-menu a:hover { background: var(--accent-glow); color: var(--accent); }
+    .dropdown-menu a i { width: 18px; text-align: center; opacity: 0.7; }
+
+    .nav-actions { display: flex; align-items: center; gap: 10px; }
+    .theme-toggle {
+      width: 50px; height: 26px;
+      background: var(--bg-card);
+      border: 1.5px solid var(--border);
+      border-radius: 13px; cursor: pointer;
+      position: relative; transition: background 0.3s, border-color 0.3s;
+      display: flex; align-items: center;
+    }
+    .theme-toggle.dark { background: var(--accent); border-color: var(--accent); }
+    .theme-toggle .toggle-thumb {
+      width: 20px; height: 20px;
+      background: var(--accent);
+      border-radius: 50%;
+      position: absolute; left: 2px;
+      transition: transform 0.3s, background 0.3s;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px; color: #fff;
+    }
+    .theme-toggle.dark .toggle-thumb {
+      transform: translateX(24px);
+      background: #fff; color: var(--accent);
+    }
+    .btn-login {
+      background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+      color: #fff; border: none; padding: 8px 20px;
+      border-radius: 8px; font-size: 0.88rem; font-weight: 600;
+      cursor: pointer; transition: opacity 0.2s, box-shadow 0.2s;
+      box-shadow: 0 4px 12px var(--accent-glow);
+      white-space: nowrap;
+    }
+    .btn-login:hover { opacity: 0.9; box-shadow: 0 6px 20px var(--accent-glow); }
+
+    .hamburger {
+      display: none; flex-direction: column; gap: 5px;
+      cursor: pointer; padding: 6px; border-radius: 8px;
+      transition: background 0.2s; background: none; border: none;
+    }
+    .hamburger:hover { background: var(--accent-glow); }
+    .hamburger span {
+      display: block; width: 22px; height: 2px;
+      background: var(--text-primary); border-radius: 2px;
+      transition: transform 0.35s, opacity 0.35s;
+    }
+    .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    #mobile-menu {
+      display: none; position: fixed; inset: 0; z-index: 999;
+      background: var(--bg-secondary);
+      padding: 100px 24px 40px;
+      overflow-y: auto;
+      transform: translateX(100%);
+      transition: transform 0.4s cubic-bezier(0.4,0,0.2,1);
+    }
+    #mobile-menu.open { transform: translateX(0); display: block; }
+    .mobile-nav-links a {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 0; border-bottom: 1px solid var(--border);
+      font-size: 1.1rem; font-weight: 500; color: var(--text-primary);
+    }
+    .mobile-nav-links a:hover { color: var(--accent); }
+    .mobile-sub { padding-left: 16px; }
+    .mobile-sub a { font-size: 0.95rem; color: var(--text-secondary); border-bottom: none; padding: 10px 0; }
+
+    /* ===== SECTION COMMONS ===== */
+    section { padding: 80px 0; }
+    .section-inner { max-width: 1280px; margin: 0 auto; padding: 0 24px; }
+    .section-label {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--accent-glow); color: var(--accent);
+      padding: 5px 14px; border-radius: 100px;
+      font-size: 0.78rem; font-weight: 700;
+      letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 14px;
+    }
+    .section-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(1.7rem, 3.5vw, 2.6rem);
+      font-weight: 700; line-height: 1.2; letter-spacing: -0.02em;
+      margin-bottom: 12px; color: var(--text-primary);
+    }
+    .section-subtitle {
+      font-size: 1rem; color: var(--text-secondary);
+      max-width: 720px; line-height: 1.65; margin-bottom: 48px;
+    }
+
+    /* ===== PAGE HERO (About) ===== */
+    .page-hero {
+      position: relative;
+      overflow: hidden;
+      padding: 84px 0 70px;
+      background:
+        radial-gradient(900px 420px at 20% 20%, rgba(212,175,55,0.20), transparent 60%),
+        linear-gradient(135deg, #050506 0%, #0f1117 45%, #1a1b20 75%, var(--accent) 100%);
+      color: #fff;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .page-hero .section-inner { position: relative; }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(255,255,255,0.12);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.2);
+      padding: 6px 16px; border-radius: 100px;
+      font-size: 0.8rem; font-weight: 600;
+      letter-spacing: 0.04em; text-transform: uppercase;
+      margin-bottom: 18px;
+    }
+    .hero-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(2.0rem, 4.8vw, 3.6rem);
+      font-weight: 800; line-height: 1.08;
+      margin-bottom: 14px; letter-spacing: -0.02em;
+    }
+    .hero-title .highlight {
+      background: linear-gradient(90deg, var(--accent-light), var(--accent), var(--accent-dark));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-subtitle {
+      font-size: 1.05rem;
+      color: rgba(255,255,255,0.78);
+      line-height: 1.7;
+      max-width: 760px;
+    }
+    .hero-actions { margin-top: 26px; display: flex; gap: 12px; flex-wrap: wrap; }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+      color: #0b0c10;
+      border: none; padding: 12px 18px;
+      border-radius: 10px; font-size: 0.95rem; font-weight: 750;
+      cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;
+      display: inline-flex; align-items: center; gap: 8px;
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(0,0,0,0.35); }
+    .btn-ghost {
+      background: rgba(255,255,255,0.10);
+      color: #fff;
+      border: 1.5px solid rgba(255,255,255,0.28);
+      padding: 12px 18px; border-radius: 10px;
+      font-size: 0.95rem; font-weight: 650;
+      cursor: pointer;
+      backdrop-filter: blur(8px);
+      transition: background 0.2s, transform 0.2s;
+      display: inline-flex; align-items: center; gap: 8px;
+    }
+    .btn-ghost:hover { background: rgba(255,255,255,0.18); transform: translateY(-2px); }
+
+    /* ===== CARDS / GRIDS ===== */
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+    .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 22px;
+      box-shadow: none;
+      transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s;
+      position: relative;
+      overflow: hidden;
+    }
+    .card:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); border-color: rgba(212,175,55,0.35); }
+    .card::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, var(--accent-glow), transparent);
+      opacity: 0; transition: opacity 0.25s;
+      pointer-events: none;
+    }
+    .card:hover::after { opacity: 1; }
+
+    .card-icon {
+      width: 52px; height: 52px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-light));
+      box-shadow: 0 10px 24px var(--accent-glow);
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-size: 1.25rem;
+      margin-bottom: 14px;
+    }
+    .card h3 { font-size: 1.02rem; font-weight: 800; margin-bottom: 6px; }
+    .card p { font-size: 0.9rem; color: var(--text-secondary); line-height: 1.65; }
+
+    /* ===== TIMELINE ===== */
+    .timeline { display: grid; gap: 12px; }
+    .timeline-item {
+      display: flex; gap: 14px;
+      padding: 16px;
+      border-radius: 14px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      transition: transform 0.22s, box-shadow 0.22s;
+    }
+    .timeline-item:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
+    .timeline-badge {
+      width: 44px; height: 44px; border-radius: 14px;
+      background: var(--accent-glow);
+      color: var(--accent);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 900;
+      flex-shrink: 0;
+    }
+    .timeline-body h4 { font-size: 0.98rem; font-weight: 850; margin-bottom: 4px; }
+    .timeline-body p { color: var(--text-secondary); font-size: 0.88rem; line-height: 1.55; }
+
+    /* ===== FOOTER ===== */
+    footer {
+      background: var(--bg-secondary);
+      border-top: 1px solid var(--border);
+      padding: 60px 0 30px;
+    }
+    .footer-inner { max-width: 1280px; margin: 0 auto; padding: 0 24px; }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 40px;
+      align-items: start;
+      margin-bottom: 28px;
+    }
+    .footer-brand p {
+      color: var(--text-secondary);
+      margin-top: 10px;
+      line-height: 1.7;
+      font-size: 0.92rem;
+      max-width: 520px;
+    }
+    .footer-socials { display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap; }
+    .social-btn {
+      width: 38px; height: 38px;
+      display: inline-flex; align-items: center; justify-content: center;
+      border-radius: 12px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      transition: transform 0.2s, border-color 0.2s, color 0.2s;
+    }
+    .social-btn:hover {
+      transform: translateY(-2px);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+    .footer-col h4 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1rem;
+      margin-bottom: 12px;
+      color: var(--text-primary);
+    }
+    .footer-col ul { display: grid; gap: 10px; }
+    .footer-col a { color: var(--text-secondary); font-size: 0.92rem; }
+    .footer-col a:hover { color: var(--accent); }
+    .footer-bottom {
+      border-top: 1px solid var(--border);
+      padding-top: 18px;
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      flex-wrap: wrap;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 980px) {
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+      .grid-3 { grid-template-columns: 1fr; }
+      .grid-2 { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 560px) {
+      .footer-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- TICKER / ALERT BAR -->
+  <div id="ticker-bar">
+    <div class="ticker-label"><i class="fas fa-bell" style="margin-right:6px"></i> Official Notices</div>
+    <div class="ticker-track-wrapper">
+      <div class="ticker-track" id="ticker-track">
+        <span class="ticker-item"><i class="fas fa-circle-info"></i> You’re viewing the new SIET About page — content can be updated anytime</span>
+        <span class="ticker-item"><i class="fas fa-graduation-cap"></i> Admissions & Departments details available on the main portal</span>
+        <span class="ticker-item"><i class="fas fa-shield-halved"></i> Official Campus Portal • Secure • Accessible</span>
+        <span class="ticker-item"><i class="fas fa-users"></i> Connect with student clubs & innovation cells</span>
+        <span class="ticker-item"><i class="fas fa-bolt"></i> Built with the same SIET UI theme system</span>
+        <span class="ticker-item"><i class="fas fa-star"></i> Replace placeholders with your official SIET content</span>
+      </div>
+    </div>
+    <button class="ticker-close" onclick="document.getElementById('ticker-bar').remove()" title="Dismiss">✕</button>
+  </div>
+
+  <!-- NAVBAR -->
+  <nav id="navbar">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">
+        <div class="logo-icon">S</div>
+        SIET
+      </a>
+
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+
+        <div class="nav-dropdown">
+          <a href="index.html#academics">Academics</a>
+          <div class="dropdown-menu">
+            <a href="index.html#academics"><i class="fas fa-flask"></i> AI and ML</a>
+            <a href="index.html#academics"><i class="fas fa-laptop-code"></i> Computer Science</a>
+            <a href="index.html#academics"><i class="fas fa-cogs"></i> Electronic and Communication</a>
+            <a href="index.html#academics"><i class="fas fa-microchip"></i> Electrical Engineering</a>
+            <a href="index.html#academics"><i class="fas fa-atom"></i> Mechanical Engineering</a>
+            <a href="index.html#academics"><i class="fas fa-road-bridge"></i> Civil Engineering</a>
+          </div>
+        </div>
+
+        <a class="active" href="about.html">About</a>
+        <a href="contact.html">Contact</a>
+      </div>
+
+      <div class="nav-actions">
+        <button class="theme-toggle" id="theme-toggle" title="Toggle theme" aria-label="Toggle dark/light mode">
+          <div class="toggle-thumb" id="toggle-thumb">
+            <i class="fas fa-sun" id="toggle-icon"></i>
+          </div>
+        </button>
+
+        <button class="btn-login" onclick="showToast('info','Login Portal','Student & faculty login coming soon!',3500)">
+          <i class="fas fa-right-to-bracket" style="margin-right:6px"></i> Login
+        </button>
+
+        <button class="hamburger" id="hamburger" aria-label="Open menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Mobile Menu -->
+  <div id="mobile-menu" role="dialog" aria-modal="true">
+    <ul class="mobile-nav-links">
+      <li><a href="index.html" onclick="closeMobileMenu()">Home <i class="fas fa-chevron-right"></i></a></li>
+      <li><a href="index.html#academics" onclick="closeMobileMenu()">Academics <i class="fas fa-chevron-right"></i></a></li>
+      <li><a href="about.html" onclick="closeMobileMenu()">About <i class="fas fa-chevron-right"></i></a></li>
+      <li><a href="contact.html" onclick="closeMobileMenu()">Contact <i class="fas fa-chevron-right"></i></a></li>
+    </ul>
+  </div>
+
+  <!-- HERO -->
+  <header class="page-hero" id="about-hero">
+    <div class="section-inner">
+      <div class="hero-badge">
+        <span style="width:8px;height:8px;border-radius:999px;background:#4ade80;box-shadow:0 0 10px #4ade80"></span>
+        About SIET
+      </div>
+
+      <h1 class="hero-title">Building <span class="highlight">future-ready engineers</span> with excellence, ethics & innovation.</h1>
+
+      <p class="hero-subtitle">
+        This About page is designed to match the SIET portal theme. Replace the placeholders below with official SIET details
+        (approvals, affiliations, accreditation, rankings, leadership, campus highlights, and achievements).
+      </p>
+
+      <div class="hero-actions">
+        <a class="btn-primary" href="contact.html"><i class="fas fa-paper-plane"></i> Contact Administration</a>
+        <a class="btn-ghost" href="index.html#academics"><i class="fas fa-graduation-cap"></i> Explore Academics</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- QUICK HIGHLIGHTS -->
+  <section id="about-highlights">
+    <div class="section-inner">
+      <div class="section-label"><i class="fas fa-gem"></i> At a glance</div>
+      <h2 class="section-title">Why students choose SIET</h2>
+      <p class="section-subtitle">
+        Use these cards to summarize SIET’s strongest differentiators (placements, labs, mentorship, industry tie-ups, research, clubs).
+      </p>
+
+      <div class="grid-3">
+        <div class="card">
+          <div class="card-icon"><i class="fas fa-rocket"></i></div>
+          <h3>Career outcomes</h3>
+          <p>Highlight placement support, training programs, internships, and top recruiters (replace with official stats).</p>
+        </div>
+
+        <div class="card">
+          <div class="card-icon"><i class="fas fa-microchip"></i></div>
+          <h3>Modern labs</h3>
+          <p>Describe lab infrastructure, innovation centers, project-based learning, and industry-aligned curriculum.</p>
+        </div>
+
+        <div class="card">
+          <div class="card-icon"><i class="fas fa-users"></i></div>
+          <h3>Student life</h3>
+          <p>Showcase clubs, sports, cultural activities, hostels, and campus community initiatives.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MISSION / VISION -->
+  <section id="about-mvv" style="background: var(--bg-secondary);">
+    <div class="section-inner">
+      <div class="section-label"><i class="fas fa-bullseye"></i> Purpose</div>
+      <h2 class="section-title">Mission & Vision</h2>
+      <p class="section-subtitle">Replace the text below with SIET’s official mission/vision statements.</p>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-icon"><i class="fas fa-compass"></i></div>
+          <h3>Vision</h3>
+          <p>
+            To be a leading institution producing globally competent professionals, innovators, and responsible citizens.
+          </p>
+        </div>
+        <div class="card">
+          <div class="card-icon"><i class="fas fa-flag-checkered"></i></div>
+          <h3>Mission</h3>
+          <p>
+            To deliver high-quality education, encourage research and entrepreneurship, and enable industry-ready skills through continuous improvement.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TIMELINE -->
+  <section id="about-timeline">
+    <div class="section-inner">
+      <div class="section-label"><i class="fas fa-timeline"></i> Journey</div>
+      <h2 class="section-title">Milestones</h2>
+      <p class="section-subtitle">Add SIET’s actual establishment year, accreditations, awards, and major campus expansions.</p>
+
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="timeline-badge"><i class="fas fa-flag"></i></div>
+          <div class="timeline-body">
+            <h4>Founded</h4>
+            <p>Replace with official founding year and the founding vision/story.</p>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-badge"><i class="fas fa-award"></i></div>
+          <div class="timeline-body">
+            <h4>Accreditation & recognition</h4>
+            <p>Add NAAC/NBA/AICTE/UGC/University affiliation details as applicable.</p>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-badge"><i class="fas fa-flask"></i></div>
+          <div class="timeline-body">
+            <h4>Research & innovation</h4>
+            <p>List major research centers, patents, funded projects, and startup initiatives.</p>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-badge"><i class="fas fa-briefcase"></i></div>
+          <div class="timeline-body">
+            <h4>Placement growth</h4>
+            <p>Provide placement highlights, MoUs, industry partners, and alumni achievements.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER (matched structure) -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="index.html" class="nav-logo"><div class="logo-icon">S</div>SIET</a>
+          <p>SIET is a premier engineering and technology institution shaping India's future innovators, researchers and industry leaders since 1994.</p>
+          <div class="footer-socials">
+            <a class="social-btn" href="#" title="Twitter/X"><i class="fab fa-x-twitter"></i></a>
+            <a class="social-btn" href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
+            <a class="social-btn" href="#" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+            <a class="social-btn" href="#" title="YouTube"><i class="fab fa-youtube"></i></a>
+            <a class="social-btn" href="#" title="GitHub"><i class="fab fa-github"></i></a>
+          </div>
+        </div>
+
+        <div class="footer-col">
+          <h4>Academics</h4>
+          <ul>
+            <li><a href="index.html#academics">Computer Science</a></li>
+            <li><a href="index.html#academics">Electronics</a></li>
+            <li><a href="index.html#academics">Mechanical</a></li>
+            <li><a href="index.html#academics">Biotechnology</a></li>
+            <li><a href="index.html#academics">All Departments</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Student Life</h4>
+          <ul>
+            <li><a href="index.html#campus">Campus Tour</a></li>
+            <li><a href="index.html#events">Events</a></li>
+            <li><a href="index.html#campus">Clubs & Societies</a></li>
+            <li><a href="index.html#campus">Sports</a></li>
+            <li><a href="index.html#campus">Hostels</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Quick Links</h4>
+          <ul>
+            <li><a href="index.html#admissions">Admissions</a></li>
+            <li><a href="index.html#placements">Placements</a></li>
+            <li><a href="index.html#alerts">Notices</a></li>
+            <li><a href="#" onclick="showToast('info','Portal','Student Portal launching soon!')">Student Portal</a></li>
+            <li><a href="#" onclick="showToast('info','Contact','📞 +91-44-2357-8900 | 📧 info@siet.edu')">Contact Us</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>© 2025 SIET — Institute of Engineering & Technology. All rights reserved.</p>
+        <p style="color:var(--accent);font-weight:600;">Official Campus Portal • Secure • Accessible</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Toast container -->
+  <div id="toast-root" aria-live="polite" aria-atomic="true"></div>
+
+  <script>
+    /* =========================
+       Theme + Navbar + Mobile Menu
+       (aligned with portal behavior)
+       ========================= */
+
+    const htmlEl = document.documentElement;
+    const themeToggle = document.getElementById('theme-toggle');
+    const toggleIcon  = document.getElementById('toggle-icon');
+    const hamburger   = document.getElementById('hamburger');
+    const mobileMenu  = document.getElementById('mobile-menu');
+    const navbar      = document.getElementById('navbar');
+
+    function applyTheme(theme) {
+      htmlEl.setAttribute('data-theme', theme);
+      const isDark = theme === 'dark';
+      themeToggle.classList.toggle('dark', isDark);
+      toggleIcon.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+      localStorage.setItem('siet_theme', theme);
+    }
+
+    (function initTheme() {
+      const saved = localStorage.getItem('siet_theme');
+      applyTheme(saved ? saved : (htmlEl.getAttribute('data-theme') || 'dark'));
+    })();
+
+    themeToggle.addEventListener('click', () => {
+      const current = htmlEl.getAttribute('data-theme') || 'dark';
+      applyTheme(current === 'dark' ? 'light' : 'dark');
+    });
+
+    window.addEventListener('scroll', () => {
+      navbar.classList.toggle('scrolled', window.scrollY > 10);
+    });
+
+    function openMobileMenu() {
+      hamburger.classList.add('open');
+      mobileMenu.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeMobileMenu() {
+      hamburger.classList.remove('open');
+      mobileMenu.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    hamburger.addEventListener('click', () => {
+      const isOpen = mobileMenu.classList.contains('open');
+      isOpen ? closeMobileMenu() : openMobileMenu();
+    });
+
+    mobileMenu.addEventListener('click', (e) => {
+      // close when clicking outside links area (simple UX)
+      if (e.target === mobileMenu) closeMobileMenu();
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeMobileMenu();
+    });
+
+    /* =========================
+       Simple Toast (for footer/login buttons)
+       ========================= */
+    const toastRoot = document.getElementById('toast-root');
+
+    function showToast(type, title, message, duration=3200) {
+      const t = document.createElement('div');
+      const palette = {
+        info:    { bg: 'var(--bg-card)', br: 'var(--border)', ic: 'fa-circle-info',  c:'var(--accent)'},
+        success: { bg: 'var(--bg-card)', br: 'var(--border)', ic: 'fa-circle-check', c:'var(--success)'},
+        warning: { bg: 'var(--bg-card)', br: 'var(--border)', ic: 'fa-triangle-exclamation', c:'var(--warning)'},
+        danger:  { bg: 'var(--bg-card)', br: 'var(--border)', ic: 'fa-circle-xmark', c:'var(--danger)'}
+      };
+      const p = palette[type] || palette.info;
+
+      t.style.cssText = `
+        position: fixed; right: 18px; bottom: 18px; z-index: 2000;
+        max-width: 360px; width: calc(100% - 36px);
+        background: ${p.bg}; border: 1px solid ${p.br};
+        border-radius: 16px; padding: 14px 14px;
+        box-shadow: var(--shadow-lg);
+        display: flex; gap: 12px; align-items: flex-start;
+        transform: translateY(10px); opacity: 0;
+        transition: all 0.25s ease;
+      `;
+
+      t.innerHTML = `
+        <div style="
+          width: 38px; height: 38px; border-radius: 12px;
+          display:flex; align-items:center; justify-content:center;
+          background: var(--accent-glow); color: ${p.c}; flex-shrink:0;
+        ">
+          <i class="fas ${p.ic}"></i>
+        </div>
+        <div style="flex:1;">
+          <div style="font-weight:800; color: var(--text-primary); margin-bottom: 2px;">${title}</div>
+          <div style="color: var(--text-secondary); line-height: 1.45; font-size: 0.92rem;">${message}</div>
+        </div>
+        <button aria-label="Close toast" style="
+          background: transparent; border: none; color: var(--text-muted);
+          cursor: pointer; padding: 4px; margin-top: 2px;
+        "><i class="fas fa-xmark"></i></button>
+      `;
+
+      toastRoot.appendChild(t);
+      requestAnimationFrame(() => { t.style.opacity = '1'; t.style.transform = 'translateY(0)'; });
+
+      const close = () => {
+        t.style.opacity = '0';
+        t.style.transform = 'translateY(10px)';
+        setTimeout(() => t.remove(), 250);
+      };
+
+      t.querySelector('button').addEventListener('click', close);
+      setTimeout(close, duration);
+    }
+
+    window.closeMobileMenu = closeMobileMenu;
+    window.showToast = showToast;
+  </script>
+</body>
+</html>

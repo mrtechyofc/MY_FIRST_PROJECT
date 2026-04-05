@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Contact — SIET Modern Campus Portal</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
+  <style>
+    /* Same theme system as portal */
+    :root {
+      --bg-primary:#fbfaf6; --bg-secondary:#ffffff; --bg-card:#ffffff; --bg-nav:rgba(255,255,255,0.85);
+      --text-primary:#0f172a; --text-secondary:#475569; --text-muted:#94a3b8;
+      --accent:#b7891c; --accent-light:#f5d77a; --accent-dark:#8a6413; --accent-glow:rgba(183,137,28,0.20);
+      --success:#22c55e; --warning:#f59e0b; --danger:#ef4444;
+      --border:rgba(15,23,42,0.10);
+      --shadow:0 10px 30px rgba(15,23,42,0.08);
+      --shadow-lg:0 24px 70px rgba(15,23,42,0.12);
+      --radius:14px; --radius-lg:24px; --transition:0.35s cubic-bezier(0.4,0,0.2,1);
+    }
+    [data-theme="dark"] {
+      --bg-primary:#07070a; --bg-secondary:#0b0c10; --bg-card:#0f1117; --bg-nav:rgba(7,7,10,0.75);
+      --text-primary:#f8fafc; --text-secondary:#cbd5e1; --text-muted:#94a3b8;
+      --accent:#d4af37; --accent-light:#f7e7a1; --accent-dark:#b7891c; --accent-glow:rgba(212,175,55,0.22);
+      --border:rgba(212,175,55,0.18);
+      --shadow:0 10px 30px rgba(0,0,0,0.55);
+      --shadow-lg:0 26px 90px rgba(0,0,0,0.65);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      transition: background var(--transition), color var(--transition);
+      overflow-x: hidden;
+    }
+    a { text-decoration: none; color: inherit; }
+    ul { list-style: none; }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg-primary); }
+    ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 9999px; }
+
+    /* Ticker */
+    #ticker-bar {
+      background: linear-gradient(90deg, var(--accent-dark), var(--accent));
+      color: #fff; padding: 8px 0; font-size: 0.82rem; font-weight: 500;
+      position: relative; overflow: hidden; z-index: 1100; display: flex; align-items: center;
+    }
+    #ticker-bar .ticker-label {
+      background: rgba(0,0,0,0.25);
+      padding: 2px 16px 2px 14px;
+      white-space: nowrap; font-weight: 700; letter-spacing: 0.06em;
+      text-transform: uppercase; font-size: 0.75rem;
+      clip-path: polygon(0 0, 90% 0, 100% 50%, 90% 100%, 0 100%);
+      flex-shrink: 0; z-index: 2; position: relative;
+    }
+    .ticker-track-wrapper { flex: 1; overflow: hidden; }
+    .ticker-track { display:flex; align-items:center; gap:60px; white-space:nowrap; width:max-content; animation:ticker-scroll 28s linear infinite; }
+    .ticker-track:hover { animation-play-state: paused; }
+    .ticker-item { display:flex; align-items:center; gap:8px; }
+    .ticker-item i { opacity:0.85; font-size:0.8rem; }
+    #ticker-bar .ticker-close {
+      position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+      background: rgba(255,255,255,0.2); border: none; color: #fff;
+      width: 22px; height: 22px; border-radius: 50%; cursor: pointer;
+      font-size: 12px; display: flex; align-items: center; justify-content: center;
+      z-index: 3; transition: background 0.2s;
+    }
+    #ticker-bar .ticker-close:hover { background: rgba(255,255,255,0.4); }
+    @keyframes ticker-scroll { 0% { transform: translateX(0);} 100% { transform: translateX(-50%);} }
+
+    /* Navbar */
+    #navbar {
+      position: sticky; top: 0; z-index: 1000;
+      background: var(--bg-nav);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      border-bottom: 1px solid var(--border);
+      transition: background var(--transition), box-shadow var(--transition);
+    }
+    #navbar.scrolled { box-shadow: var(--shadow); }
+    .nav-inner {
+      max-width: 1280px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 24px; height: 66px;
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: 10px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700; font-size: 1.35rem; color: var(--accent);
+    }
+    .nav-logo .logo-icon {
+      width: 36px; height: 36px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-light));
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-size: 1rem; font-weight: 800;
+      box-shadow: 0 4px 12px var(--accent-glow);
+    }
+    .nav-links { display:flex; align-items:center; gap:4px; }
+    .nav-links a {
+      padding: 8px 14px; border-radius: 8px;
+      font-size: 0.9rem; font-weight: 500; color: var(--text-secondary);
+      transition: background 0.2s, color 0.2s;
+    }
+    .nav-links a:hover, .nav-links a.active { background: var(--accent-glow); color: var(--accent); }
+
+    .nav-actions { display:flex; align-items:center; gap:10px; }
+    .theme-toggle {
+      width: 50px; height: 26px; background: var(--bg-card);
+      border: 1.5px solid var(--border); border-radius: 13px; cursor: pointer;
+      position: relative; transition: background 0.3s, border-color 0.3s;
+      display: flex; align-items: center;
+    }
+    .theme-toggle.dark { background: var(--accent); border-color: var(--accent); }
+    .theme-toggle .toggle-thumb {
+      width: 20px; height: 20px; background: var(--accent);
+      border-radius: 50%; position: absolute; left: 2px;
+      transition: transform 0.3s, background 0.3s;
+      display:flex; align-items:center; justify-content:center;
+      font-size: 10px; color: #fff;
+    }
+    .theme-toggle.dark .toggle-thumb { transform: translateX(24px); background:#fff; color: var(--accent); }
+
+    .btn-login {
+      background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+      color: #fff; border: none; padding: 8px 20px;
+      border-radius: 8px; font-size: 0.88rem; font-weight: 600;
+      cursor: pointer; transition: opacity 0.2s, box-shadow 0.2s;
+      box-shadow: 0 4px 12px var(--accent-glow);
+      white-space: nowrap;
+    }
+    .btn-login:hover { opacity: 0.9; box-shadow: 0 6px 20px var(--accent-glow); }
+
+    .hamburger {
+      display:none; flex-direction: column; gap:5px;
+      cursor:pointer; padding:6px; border-radius:8px;
+      transition: background 0.2s; background:none; border:none;
+    }
+    .hamburger:hover { background: var(--accent-glow); }
+    .hamburger span {
+      display:block; width:22px; height:2px;
+      background: var(--text-primary); border-radius:2px;
+      transition: transform 0.35s, opacity 0.35s;
+    }
+    .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    #mobile-menu {
+      display:none; position: fixed; inset:0; z-index:999;
+      background: var(--bg-secondary);
+      padding: 100px 24px 40px;
+      overflow-y:auto;
+      transform: translateX(100%);
+      transition: transform 0.4s cubic-bezier(0.4,0,0.2,1);
+    }
+    #mobile-menu.open { transform: translateX(0); display:block; }
+    .mobile-nav-links a {
+      display:flex; align-items:center; justify-content:space-between;
+      padding: 14px 0; border-bottom:1px solid var(--border);
+      font-size: 1.1rem; font-weight: 500; color: var(--text-primary);
+    }
+    .mobile-nav-links a:hover { color: var(--accent); }
+
+    /* Sections */
+    section { padding: 80px 0; }
+    .section-inner { max-width: 1280px; margin: 0 auto; padding: 0 24px; }
+    .section-label {
+      display:inline-flex; align-items:center; gap:8px;
+      background: var(--accent-glow); color: var(--accent);
+      padding: 5px 14px; border-radius: 100px;
+      font-size: 0.78rem; font-weight: 700; letter-spacing: 0.06em;
+      text-transform: uppercase; margin-bottom: 14px;
+    }
+    .section-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(1.7rem, 3.5vw, 2.6rem);
+      font-weight: 700; line-height: 1.2; letter-spacing: -0.02em;
+      margin-bottom: 12px; color: var(--text-primary);
+    }
+    .section-subtitle { font-size: 1rem; color: var(--text-secondary); max-width: 720px; line-height: 1.65; margin-bottom: 48px; }
+
+    /* Contact hero */
+    .page-hero {
+      padding: 84px 0 70px;
+      background:
+        radial-gradient(900px 420px at 20% 20%, rgba(212,175,55,0.20), transparent 60%),
+        linear-gradient(135deg, #050506 0%, #0f1117 45%, #1a1b20 75%, var(--accent) 100%);
+      color: #fff;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .hero-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(2.0rem, 4.8vw, 3.6rem);
+      font-weight: 800; line-height: 1.08;
+      margin-bottom: 12px;
+    }
+    .hero-title .highlight {
+      background: linear-gradient(90deg, var(--accent-light), var(--accent), var(--accent-dark));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .hero-subtitle { color: rgba(255,255,255,0.78); line-height: 1.7; max-width: 760px; }
+
+    /* Grid/cards */
+    .grid { display:grid; grid-template-columns: 1.2fr 0.8fr; gap: 18px; align-items:start; }
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 22px;
+      transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s;
+      position: relative; overflow:hidden;
+    }
+    .card:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); border-color: rgba(212,175,55,0.35); }
+    .card::after {
+      content:''; position:absolute; inset:0;
+      background: linear-gradient(135deg, var(--accent-glow), transparent);
+      opacity:0; transition: opacity 0.25s; pointer-events:none;
+    }
+    .card:hover::after { opacity:1; }
+    .card h3 { font-size: 1.05rem; font-weight: 850; margin-bottom: 10px; }
+    .muted { color: var(--text-secondary); line-height: 1.6; font-size: 0.92rem; }
+
+    .info-list { display:grid; gap: 10px; margin-top: 10px; }
+    .info-item {
+      display:flex; gap: 12px; align-items:flex-start;
+      padding: 12px 12px;
+      border-radius: 14px;
+      background: var(--bg-primary);
+      border: 1px solid rgba(255,255,255,0.0);
+      transition: background 0.2s;
+    }
+    .info-item:hover { background: var(--accent-glow); }
+    .info-icon {
+      width: 42px; height: 42px; border-radius: 14px;
+      background: var(--accent-glow); color: var(--accent);
+      display:flex; align-items:center; justify-content:center;
+      flex-shrink:0;
+    }
+    .info-item strong { display:block; margin-bottom: 2px; }
+    .info-item a { color: var(--text-primary); }
+    .info-item a:hover { color: var(--accent); }
+
+    /* Form */
+    .form-grid { display:grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .field { display:grid; gap: 8px; }
+    label { font-weight: 650; font-size: 0.92rem; color: var(--text-secondary); }
+    input, textarea {
+      width: 100%;
+      background: var(--bg-primary);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px 14px;
+      color: var(--text-primary);
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.95rem;
+    }
+    textarea { min-height: 140px; resize: vertical; }
+    input:focus, textarea:focus {
+      border-color: rgba(212,175,55,0.55);
+      box-shadow: 0 0 0 4px var(--accent-glow);
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+      color: #0b0c10;
+      border: none; padding: 12px 16px;
+      border-radius: 12px; font-size: 0.95rem; font-weight: 800;
+      cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;
+      display: inline-flex; align-items: center; gap: 10px;
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(0,0,0,0.35); }
+    .btn-secondary {
+      background: var(--accent-glow); color: var(--accent);
+      border: 1px solid rgba(212,175,55,0.25);
+      padding: 12px 16px; border-radius: 12px;
+      font-size: 0.95rem; font-weight: 750;
+      cursor:pointer; transition: background 0.2s, transform 0.2s;
+      display: inline-flex; align-items: center; gap: 10px;
+    }
+    .btn-secondary:hover { background: rgba(212,175,55,0.32); transform: translateY(-2px); }
+    .form-actions { display:flex; gap: 12px; flex-wrap: wrap; margin-top: 14px; }
+
+    /* Map placeholder */
+    .map {
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      overflow: hidden;
+      background:
+        radial-gradient(800px 220px at 20% 20%, rgba(212,175,55,0.18), transparent 60%),
+        linear-gradient(135deg, var(--bg-card), var(--bg-secondary));
+      height: 220px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color: var(--text-secondary);
+      position: relative;
+    }
+    .map i { font-size: 1.2rem; color: var(--accent); margin-right: 8px; }
+    .map small { color: var(--text-muted); display:block; margin-top: 6px; }
+
+    /* Footer (matched structure) */
+    footer { background: var(--bg-secondary); border-top: 1px solid var(--border); padding: 60px 0 30px; }
+    .footer-inner { max-width: 1280px; margin: 0 auto; padding: 0 24px; }
+    .footer-grid { display:grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 28px; }
+    .footer-brand p { color: var(--text-secondary); margin-top: 10px; line-height: 1.7; font-size: 0.92rem; max-width: 520px; }
+    .footer-socials { display:flex; gap:10px; margin-top:16px; flex-wrap: wrap; }
+    .social-btn {
+      width: 38px; height: 38px; display:inline-flex; align-items:center; justify-content:center;
+      border-radius: 12px; background: var(--bg-card); border: 1px solid var(--border);
+      color: var(--text-secondary); transition: transform 0.2s, border-color 0.2s, color 0.2s;
+    }
+    .social-btn:hover { transform: translateY(-2px); border-color: var(--accent); color: var(--accent); }
+    .footer-col h4 { font-family:'Space Grotesk', sans-serif; font-size: 1rem; margin-bottom: 12px; }
+    .footer-col ul { display:grid; gap:10px; }
+    .footer-col a { color: var(--text-secondary); font-size: 0.92rem; }
+    .footer-col a:hover { color: var(--accent); }
+    .footer-bottom {
+      border-top: 1px solid var(--border);
+      padding-top: 18px;
+      display:flex; justify-content:space-between; gap: 14px; flex-wrap: wrap;
+      color: var(--text-muted); font-size: 0.9rem;
+    }
+
+    @media (max-width: 980px) {
+      .nav-links { display:none; }
+      .hamburger { display:flex; }
+      .grid { grid-template-columns: 1fr; }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+      .form-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 560px) {
+      .footer-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+
+<body>
+  <div id="ticker-bar">
+    <div class="ticker-label"><i class="fas fa-bell" style="margin-right:6px"></i> Official Notices</div>
+    <div class="ticker-track-wrapper">
+      <div class="ticker-track" id="ticker-track">
+        <span class="ticker-item"><i class="fas fa-phone"></i> Admissions & Enquiries: +91-44-2357-8900</span>
+        <span class="ticker-item"><i class="fas fa-envelope"></i> Email: info@siet.edu</span>
+        <span class="ticker-item"><i class="fas fa-circle-info"></i> Fill the form — we’ll respond soon</span>
+        <span class="ticker-item"><i class="fas fa-location-dot"></i> Update map/address details as per your official website</span>
+        <span class="ticker-item"><i class="fas fa-shield-halved"></i> Official Campus Portal • Secure • Accessible</span>
+        <span class="ticker-item"><i class="fas fa-star"></i> Same SIET UI theme for consistency</span>
+      </div>
+    </div>
+    <button class="ticker-close" onclick="document.getElementById('ticker-bar').remove()" title="Dismiss">✕</button>
+  </div>
+
+  <nav id="navbar">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">
+        <div class="logo-icon">S</div>
+        SIET
+      </a>
+
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a class="active" href="contact.html">Contact</a>
+      </div>
+
+      <div class="nav-actions">
+        <button class="theme-toggle" id="theme-toggle" title="Toggle theme" aria-label="Toggle dark/light mode">
+          <div class="toggle-thumb" id="toggle-thumb">
+            <i class="fas fa-sun" id="toggle-icon"></i>
+          </div>
+        </button>
+
+        <button class="btn-login" onclick="showToast('info','Login Portal','Student & faculty login coming soon!',3500)">
+          <i class="fas fa-right-to-bracket" style="margin-right:6px"></i> Login
+        </button>
+
+        <button class="hamburger" id="hamburger" aria-label="Open menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <div id="mobile-menu" role="dialog" aria-modal="true">
+    <ul class="mobile-nav-links">
+      <li><a href="index.html" onclick="closeMobileMenu()">Home <i class="fas fa-chevron-right"></i></a></li>
+      <li><a href="about.html" onclick="closeMobileMenu()">About <i class="fas fa-chevron-right"></i></a></li>
+      <li><a href="contact.html" onclick="closeMobileMenu()">Contact <i class="fas fa-chevron-right"></i></a></li>
+    </ul>
+  </div>
+
+  <header class="page-hero" id="contact-hero">
+    <div class="section-inner">
+      <div class="section-label" style="background: rgba(255,255,255,0.12); color: #fff; border:1px solid rgba(255,255,255,0.18);">
+        <i class="fas fa-paper-plane"></i> Contact
+      </div>
+      <h1 class="hero-title">Get in touch with <span class="highlight">SIET</span></h1>
+      <p class="hero-subtitle">
+        Use this page for admissions enquiries, administrative support, campus visits, and official communication.
+        Update the address/map/social links with your verified SIET details.
+      </p>
+    </div>
+  </header>
+
+  <section id="contact-main">
+    <div class="section-inner">
+      <div class="section-label"><i class="fas fa-headset"></i> Support</div>
+      <h2 class="section-title">We’re here to help</h2>
+      <p class="section-subtitle">
+        Contact details below are taken from the portal footer pattern. Adjust as needed if SIET has updated official contacts.
+      </p>
+
+      <div class="grid">
+        <!-- Left: Form -->
+        <div class="card" aria-labelledby="contact-form-title">
+          <h3 id="contact-form-title"><i class="fas fa-pen-to-square" style="color:var(--accent); margin-right:8px;"></i> Send a message</h3>
+          <p class="muted">This form is front-end only. Connect it to your backend/email service later.</p>
+
+          <form id="contact-form" novalidate style="margin-top:14px;">
+            <div class="form-grid">
+              <div class="field">
+                <label for="name">Full Name</label>
+                <input id="name" name="name" type="text" placeholder="Your name" autocomplete="name" required />
+              </div>
+              <div class="field">
+                <label for="email">Email</label>
+                <input id="email" name="email" type="email" placeholder="you@example.com" autocomplete="email" required />
+              </div>
+              <div class="field" style="grid-column: 1 / -1;">
+                <label for="subject">Subject</label>
+                <input id="subject" name="subject" type="text" placeholder="Admissions / Campus visit / Verification / Other" required />
+              </div>
+              <div class="field" style="grid-column: 1 / -1;">
+                <label for="message">Message</label>
+                <textarea id="message" name="message" placeholder="Write your message..." required></textarea>
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button class="btn-primary" type="submit">
+                <i class="fas fa-paper-plane"></i> Submit
+              </button>
+              <button class="btn-secondary" type="button" onclick="prefillAdmissions()">
+                <i class="fas fa-graduation-cap"></i> Prefill: Admissions
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Right: Contact info -->
+        <div class="card" aria-labelledby="contact-info-title">
+          <h3 id="contact-info-title"><i class="fas fa-address-card" style="color:var(--accent); margin-right:8px;"></i> Contact information</h3>
+          <p class="muted">Replace address/map with official SIET campus location details.</p>
+
+          <div class="info-list">
+            <div class="info-item">
+              <div class="info-icon"><i class="fas fa-phone"></i></div>
+              <div>
+                <strong>Phone</strong>
+                <a href="tel:+914423578900">+91-44-2357-8900</a>
+              </div>
+            </div>
+
+            <div class="info-item">
+              <div class="info-icon"><i class="fas fa-envelope"></i></div>
+              <div>
+                <strong>Email</strong>
+                <a href="mailto:info@siet.edu">info@siet.edu</a>
+              </div>
+            </div>
+
+            <div class="info-item">
+              <div class="info-icon"><i class="fas fa-clock"></i></div>
+              <div>
+                <strong>Office hours</strong>
+                <span class="muted">Mon–Sat • 9:00 AM – 5:00 PM</span>
+              </div>
+            </div>
+
+            <div class="info-item">
+              <div class="info-icon"><i class="fas fa-location-dot"></i></div>
+              <div>
+                <strong>Campus address</strong>
+                <span class="muted">Add full SIET address here (street, city, state, PIN).</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="map" style="margin-top: 14px;">
+            <div style="text-align:center; padding: 0 14px;">
+              <div><i class="fas fa-map-location-dot"></i> Map embed placeholder</div>
+              <small>Replace this block with a Google Maps iframe when ready.</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="index.html" class="nav-logo"><div class="logo-icon">S</div>SIET</a>
+          <p>SIET is a premier engineering and technology institution shaping India's future innovators, researchers and industry leaders since 1994.</p>
+          <div class="footer-socials">
+            <a class="social-btn" href="#" title="Twitter/X"><i class="fab fa-x-twitter"></i></a>
+            <a class="social-btn" href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
+            <a class="social-btn" href="#" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+            <a class="social-btn" href="#" title="YouTube"><i class="fab fa-youtube"></i></a>
+            <a class="social-btn" href="#" title="GitHub"><i class="fab fa-github"></i></a>
+          </div>
+        </div>
+
+        <div class="footer-col">
+          <h4>Academics</h4>
+          <ul>
+            <li><a href="index.html#academics">Computer Science</a></li>
+            <li><a href="index.html#academics">Electronics</a></li>
+            <li><a href="index.html#academics">Mechanical</a></li>
+            <li><a href="index.html#academics">Biotechnology</a></li>
+            <li><a href="index.html#academics">All Departments</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Student Life</h4>
+          <ul>
+            <li><a href="index.html#campus">Campus Tour</a></li>
+            <li><a href="index.html#events">Events</a></li>
+            <li><a href="index.html#campus">Clubs & Societies</a></li>
+            <li><a href="index.html#campus">Sports</a></li>
+            <li><a href="index.html#campus">Hostels</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Quick Links</h4>
+          <ul>
+            <li><a href="index.html#admissions">Admissions</a></li>
+            <li><a href="index.html#placements">Placements</a></li>
+            <li><a href="index.html#alerts">Notices</a></li>
+            <li><a href="#" onclick="showToast('info','Portal','Student Portal launching soon!')">Student Portal</a></li>
+            <li><a href="#" onclick="showToast('info','Contact','📞 +91-44-2357-8900 | 📧 info@siet.edu')">Contact Us</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>© 2025 SIET — Institute of Engineering & Technology. All rights reserved.</p>
+        <p style="color:var(--accent);font-weight:600;">Official Campus Portal • Secure • Accessible</p>
+      </div>
+    </div>
+  </footer>
+
+  <div id="toast-root" aria-live="polite" aria-atomic="true"></div>
+
+  <script>
+    const htmlEl = document.documentElement;
+    const themeToggle = document.getElementById('theme-toggle');
+    const toggleIcon  = document.getElementById('toggle-icon');
+    const hamburger   = document.getElementById('hamburger');
+    const mobileMenu  = document.getElementById('mobile-menu');
+    const navbar      = document.getElementById('navbar');
+
+    function applyTheme(theme) {
+      htmlEl.setAttribute('data-theme', theme);
+      const isDark = theme === 'dark';
+      themeToggle.classList.toggle('dark', isDark);
+      toggleIcon.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+      localStorage.setItem('siet_theme', theme);
+    }
+
+    (function initTheme() {
+      const saved = localStorage.getItem('siet_theme');
+      applyTheme(saved ? saved : (htmlEl.getAttribute('data-theme') || 'dark'));
+    })();
+
+    themeToggle.addEventListener('click', () => {
+      const current = htmlEl.getAttribute('data-theme') || 'dark';
+      applyTheme(current === 'dark' ? 'light' : 'dark');
+    });
+
+    window.addEventListener('scroll', () => {
+      navbar.classList.toggle('scrolled', window.scrollY > 10);
+    });
+
+    function openMobileMenu() {
+      hamburger.classList.add('open');
+      mobileMenu.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeMobileMenu() {
+      hamburger.classList.remove('open');
+      mobileMenu.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+    hamburger.addEventListener('click', () => {
+      mobileMenu.classList.contains('open') ? closeMobileMenu() : openMobileMenu();
+    });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeMobileMenu(); });
+    window.closeMobileMenu = closeMobileMenu;
+
+    // Toast
+    const toastRoot = document.getElementById('toast-root');
+    function showToast(type, title, message, duration=3200) {
+      const t = document.createElement('div');
+      const palette = {
+        info:    { ic: 'fa-circle-info',  c:'var(--accent)' },
+        success: { ic: 'fa-circle-check', c:'var(--success)' },
+        warning: { ic: 'fa-triangle-exclamation', c:'var(--warning)' },
+        danger:  { ic: 'fa-circle-xmark', c:'var(--danger)' }
+      };
+      const p = palette[type] || palette.info;
+
+      t.style.cssText = `
+        position: fixed; right: 18px; bottom: 18px; z-index: 2000;
+        max-width: 360px; width: calc(100% - 36px);
+        background: var(--bg-card); border: 1px solid var(--border);
+        border-radius: 16px; padding: 14px;
+        box-shadow: var(--shadow-lg);
+        display: flex; gap: 12px; align-items: flex-start;
+        transform: translateY(10px); opacity: 0;
+        transition: all 0.25s ease;
+      `;
+
+      t.innerHTML = `
+        <div style="
+          width: 38px; height: 38px; border-radius: 12px;
+          display:flex; align-items:center; justify-content:center;
+          background: var(--accent-glow); color: ${p.c}; flex-shrink:0;
+        ">
+          <i class="fas ${p.ic}"></i>
+        </div>
+        <div style="flex:1;">
+          <div style="font-weight:800; color: var(--text-primary); margin-bottom: 2px;">${title}</div>
+          <div style="color: var(--text-secondary); line-height: 1.45; font-size: 0.92rem;">${message}</div>
+        </div>
+        <button aria-label="Close toast" style="
+          background: transparent; border: none; color: var(--text-muted);
+          cursor: pointer; padding: 4px; margin-top: 2px;
+        "><i class="fas fa-xmark"></i></button>
+      `;
+
+      toastRoot.appendChild(t);
+      requestAnimationFrame(() => { t.style.opacity = '1'; t.style.transform = 'translateY(0)'; });
+
+      const close = () => {
+        t.style.opacity = '0';
+        t.style.transform = 'translateY(10px)';
+        setTimeout(() => t.remove(), 250);
+      };
+      t.querySelector('button').addEventListener('click', close);
+      setTimeout(close, duration);
+    }
+    window.showToast = showToast;
+
+    // Form handling (front-end)
+    const form = document.getElementById('contact-form');
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = document.getElementById('name').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const subject = document.getElementById('subject').value.trim();
+      const message = document.getElementById('message').value.trim();
+
+      if (!name || !email || !subject || !message) {
+        showToast('warning', 'Missing fields', 'Please fill in all fields before submitting.', 3500);
+        return;
+      }
+
+      // Demo only
+      showToast('success', 'Message queued', 'Thanks! Your message was captured (connect backend to send).', 3800);
+      form.reset();
+    });
+
+    function prefillAdmissions() {
+      document.getElementById('subject').value = 'Admissions enquiry';
+      document.getElementById('message').value =
+        'Hello SIET Team,\n\nI would like to know about admissions eligibility, important dates, and required documents.\n\nThank you.';
+      showToast('info', 'Prefilled', 'Admissions template inserted.', 2200);
+    }
+    window.prefillAdmissions = prefillAdmissions;
+  </script>
+</body>
+</html>
